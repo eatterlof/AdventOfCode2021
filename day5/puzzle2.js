@@ -1,38 +1,43 @@
-import { draws } from "./input.js";
-import { bingoBoards } from "./input.js";
+import { input } from './input.js'
 
-const evaluateBoard = (board, set) => {
-   for (let i = 0; i < 5; i++) {
-      let columnMatch = 0, rowMatch = 0;
-      for (let j = 0; j <5; j++) {
-         if (set[board[j][i]]) { columnMatch++ }
-         if (set[board[i][j]]) { rowMatch++ }
-      }
-      if (columnMatch == 5 || rowMatch == 5) { return true }
-   }
-   return false;
+let count = new Map();
+let overlaps = 0;
+
+for (let part of input) {
+	let a = part[0];
+	let b = part[1];
+
+	let x1 = a[0], y1 = a[1];
+	let x2 = b[0], y2 = b[1];
+
+	if (x1 == x2) {
+		for (let y = Math.min(y1, y2); y <= Math.max(y1, y2); y++) {
+			let key = `${x1}-${y}`;
+			let val = (count.get(key) ?? 0) + 1;
+			if (val == 2) overlaps++;
+
+			count.set(key, val);
+		}
+	} else if (y1 == y2) {
+		for (let x = Math.min(x1, x2); x <= Math.max(x1, x2); x++) {
+			let key = `${x}-${y1}`;
+			let val = (count.get(key) ?? 0) + 1;
+			if (val == 2) overlaps++;
+
+			count.set(key, val);
+		}
+	} else {
+		let xStep = x1 < x2 ? 1 : -1;
+		let yStep = y1 < y2 ? 1 : -1;
+		for (let x = x1, y = y1; ; x += xStep, y += yStep) {
+			let key = `${x}-${y}`;
+			let val = (count.get(key) ?? 0) + 1;
+			if (val == 2) overlaps++;
+
+			count.set(key, val);
+
+			if (x == x2 || y == y2) break;
+		}
+	}
 }
-
-let selectedSet = [];
-let scores = [];
-
-for (let draw of draws) {
-   selectedSet[draw] = true;
-   for (let i = 0; i < bingoBoards.length; i++) {
-      let board = bingoBoards[i]; 
-      if (evaluateBoard(board, selectedSet)) {
-         let boardScore = 0;
-         for (let i = 0; i < 5; i++) {
-            for (let j = 0; j < 5; j++) {
-               if (!selectedSet[board[i][j]]) { boardScore += board[i][j] }
-            }
-         }
-         bingoBoards.splice(i, 1);
-         i--;
-         boardScore *= draw;
-         scores.push(boardScore);
-      }
-   }  
-}
-
-console.log(scores.pop());  
+console.log(overlaps);
