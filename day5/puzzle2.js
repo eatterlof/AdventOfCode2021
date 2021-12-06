@@ -1,8 +1,7 @@
 import { draws } from "./input.js";
 import { bingoBoards } from "./input.js";
 
-
-let evaluateBoard = (board, set) => {
+const evaluateBoard = (board, set) => {
    for (let i = 0; i < 5; i++) {
       let columnMatch = 0, rowMatch = 0;
       for (let j = 0; j <5; j++) {
@@ -15,37 +14,25 @@ let evaluateBoard = (board, set) => {
 }
 
 let selectedSet = [];
-let score = 0;
+let scores = [];
 
 for (let draw of draws) {
-
    selectedSet[draw] = true;
-   let scores = [];
-   
    for (let i = 0; i < bingoBoards.length; i++) {
       let board = bingoBoards[i]; 
-
       if (evaluateBoard(board, selectedSet)) {
          let boardScore = 0;
-
          for (let i = 0; i < 5; i++) {
             for (let j = 0; j < 5; j++) {
                if (!selectedSet[board[i][j]]) { boardScore += board[i][j] }
             }
          }
-
          bingoBoards.splice(i, 1);
          i--;
-
-
          boardScore *= draw;
-         
          scores.push(boardScore);
       }
-   }
-
-   if (scores.length > 0) {
-      console.log(scores);
-   }
-      
+   }  
 }
+
+console.log(scores.pop());  

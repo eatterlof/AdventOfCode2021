@@ -23,7 +23,7 @@ export const draws = [
 	51, 72, 60, 16, 12, 64, 18, 13, 1, 35, 15, 66, 67, 43, 22, 87, 97, 32, 39, 82,
 ];
 
-export const boards = [
+export const bingoBoards = [
 	[
 		[10, 27, 53, 91, 86],
 		[15, 94, 47, 38, 61],
